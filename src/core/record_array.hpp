@@ -14,4 +14,8 @@ struct RecordArray {
   //   capacity = _capacity;
   // }
   ~RecordArray();
+
+  void push(Record);
+
+  void resize(std::uint32_t);
 };

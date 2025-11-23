@@ -24,10 +24,11 @@ int main(int argc, char *argv[]) {
   RecordArray record_arr;
 
   if (fs::exists(p, ec)) {
-    // load it into memory
     std::ifstream in(p);
-    if (!in)
+    if (!in) {
+      std::cerr << "Error loading input stream.\n";
       return 1;
+    }
     char line[64];
     if (!in.getline(line, 64))
       return 1;
@@ -52,11 +53,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  std::cout << "loaded into memory\n";
-  std::cout << record_arr.data[0].name << "\n";
-
-  char name[128];
-  std::cin >> name;
+  std::cout << "To add a name to cms type: add <name>" << std::endl;
 
   return 0;
 }
