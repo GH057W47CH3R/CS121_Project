@@ -1,5 +1,7 @@
 # CMS
 
+View the project at: <https://github.com/GH057W47CH3R/CS121_Project>
+
 Our project is a basic CMS system that supports the following data:
 
 - name
@@ -26,6 +28,7 @@ We plan to implement:
 
 The project is laid out with a core library that is used by app. The app
 directory is where the executable is built from. It includes parts of core.
+We plan to separate the client from the server. So we will have two executables.
 We use cmake to build the project.
 
 ## Class Spec
@@ -33,6 +36,7 @@ We use cmake to build the project.
 - Record := The data type of the information stored per person.
 - RecordArray := is an array of records with an associated size and capacity.
 (its meant to mirror std::vector essentially)
+- AppState := The state of the app which includes a RecordArray.
 
 ## Documentation
 
@@ -47,5 +51,5 @@ future builds only need to call the second.)
 To run
 
 ```
-  ./build/app
+  ./build/cms
 ```

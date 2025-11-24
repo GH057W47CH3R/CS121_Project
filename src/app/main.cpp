@@ -19,7 +19,9 @@ int main(int argc, char *argv[]) {
 
     app_state.save_to_file(p);
   } catch (const std::exception &e) {
+    // #TODO fail gracefully
     std::cerr << "Error: " << e.what() << std::endl;
+    return 1;
   }
 
   return 0;
