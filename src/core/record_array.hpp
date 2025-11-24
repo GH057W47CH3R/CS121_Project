@@ -19,9 +19,7 @@ struct RecordArray {
 
   void resize(std::uint32_t);
 
-  void add_record(constchar* newName);
+  void add_record(Record);
 
   void delete_record(std::uint32_t index);
-
-  void save_records(const fs::path& p);
 };

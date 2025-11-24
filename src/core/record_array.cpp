@@ -1,5 +1,5 @@
 #include "record_array.hpp"
-#include <iostream>
+#include <stdexcept>
 
 RecordArray::RecordArray() : data(nullptr), size(0), capacity(0) {}
 
@@ -10,7 +10,7 @@ RecordArray::~RecordArray() {
   capacity = 0;
 }
 
-void RecordArray::push(Record record) {
+void RecordArray::add_record(Record record) {
   if (this->size == this->capacity) {
     this->resize(this->capacity * 2);
   }
@@ -31,45 +31,11 @@ void RecordArray::resize(std::uint32_t new_capacity) {
   this->data = new_data;
 }
 
-void RecordArray::add_record(const char* newName) {
-    Record* newArr = new Record[size + 1];
-
-    for (std::uint32_t i = 0; i < size; i++) {
-        newArr[i] = data[i];
-    }
-
-    std::strncpy(newArr[size].name, newName, 63);
-    newArr[size].name[63] = '\0';
-
-    delete[] data;
-
-    data = newArr;
-    size++;
-}
-
 void RecordArray::delete_record(std::uint32_t index) {
-    if (index >= size) {
-        std::cerr << "Invalid index\n";
-        return;
-    }
-    
-    data[index] = data[size - 1] ;   
-    size--;
-}
+  if (index >= size) {
+    throw std::invalid_argument("Invalid index");
+  }
 
-void RecordArray::save_records(const fs::path& p) {
-    std::ofstream out(p);
-    if (!out) {
-        std::cerr << "Failed to open file for writing: " << p << "\n";
-        return;
-    }
-
-    out << size << "\n";
-
-    for (std::uint32_t i = 0; i < size; i++) {
-        out << data[i].name << "\n";
-    }
-
-    out.close(); 
-    std::cout << "Records saved to file: " << p << "\n";
+  data[index] = data[size - 1];
+  size--;
 }
