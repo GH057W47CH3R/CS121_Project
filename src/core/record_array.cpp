@@ -48,21 +48,12 @@ void RecordArray::add_record(const char* newName) {
 }
 
 void RecordArray::delete_record(std::uint32_t index) {
-    if (index == 0 || index > size) {
+    if (index >= size) {
         std::cerr << "Invalid index\n";
         return;
     }
-
-    Record* newArr = new Record[size - 1];
-
-    for (std::uint32_t i = 0, j = 0; i < size; i++) {
-        if (i == index - 1) continue; 
-        newArr[j++] = data[i];
-    }
-
-    delete[] data;
-
-    data = newArr;
+    
+    data[index] = data[size - 1] ;   
     size--;
 }
 
