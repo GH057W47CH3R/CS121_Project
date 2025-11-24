@@ -18,4 +18,10 @@ struct RecordArray {
   void push(Record);
 
   void resize(std::uint32_t);
+
+  void add_record(RecordArray& arr, constchar* newName);
+
+  void delete_record(RecordArray& arr, std::uint32_t index);
+
+  void save_records(const fs::path& p, const RecordArray& arr);
 };
