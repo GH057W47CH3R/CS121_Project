@@ -1,25 +1,19 @@
 #include <iostream>
-#include <fstream>
-#include <filesystem>
 #include "core/record_array.hpp"
 
-namespace fs = std::filesystem;
-
-void save_records(const fs::path& p, const RecordArray& arr) {
+void RecordArray::save_records(const fs::path& p) {
     std::ofstream out(p);
     if (!out) {
         std::cerr << "Failed to open file for writing: " << p << "\n";
         return;
     }
 
-    //write the number of records as the first line
-    out << arr.count << "\n";
+    out << size << "\n";
 
-    //write each record name on its own line
-    for (std::uint32_t i = 0; i < arr.count; i++) {
-        out << arr.data[i].name << "\n";
+    for (std::uint32_t i = 0; i < size; i++) {
+        out << data[i].name << "\n";
     }
 
-    out.close();
+    out.close(); 
     std::cout << "Records saved to file: " << p << "\n";
 }
