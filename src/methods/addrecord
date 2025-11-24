@@ -2,18 +2,18 @@
 #include <iostream>
 #include "core/record_array.hpp"
 
-void add_record(RecordArray& arr, const char* newName) {
-    Record* newArr = new Record[arr.size + 1];
+void RecordArray::add_record(const char* newName) {
+    Record* newArr = new Record[size + 1];
 
-    for (std::uint32_t i = 0; i < arr.size; i++) {
-        newArr[i] = arr.data[i];
+    for (std::uint32_t i = 0; i < size; i++) {
+        newArr[i] = data[i];
     }
 
-    std::strncpy(newArr[arr.size].name, newName, 63);
-    newArr[arr.size].name[63] = '\0';
+    std::strncpy(newArr[size].name, newName, 63);
+    newArr[size].name[63] = '\0';
 
-    delete[] arr.data;
+    delete[] data;
 
-    arr.data = newArr;
-    arr.size++;
+    data = newArr;
+    size++;
 }
