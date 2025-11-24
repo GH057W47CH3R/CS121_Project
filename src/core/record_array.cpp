@@ -30,3 +30,55 @@ void RecordArray::resize(std::uint32_t new_capacity) {
   delete[] this->data;
   this->data = new_data;
 }
+
+void RecordArray::add_record(const char* newName) {
+    Record* newArr = new Record[size + 1];
+
+    for (std::uint32_t i = 0; i < size; i++) {
+        newArr[i] = data[i];
+    }
+
+    std::strncpy(newArr[size].name, newName, 63);
+    newArr[size].name[63] = '\0';
+
+    delete[] data;
+
+    data = newArr;
+    size++;
+}
+
+void RecordArray::delete_record(std::uint32_t index) {
+    if (index == 0 || index > size) {
+        std::cerr << "Invalid index\n";
+        return;
+    }
+
+    Record* newArr = new Record[size - 1];
+
+    for (std::uint32_t i = 0, j = 0; i < size; i++) {
+        if (i == index - 1) continue; 
+        newArr[j++] = data[i];
+    }
+
+    delete[] data;
+
+    data = newArr;
+    size--;
+}
+
+void RecordArray::save_records(const fs::path& p) {
+    std::ofstream out(p);
+    if (!out) {
+        std::cerr << "Failed to open file for writing: " << p << "\n";
+        return;
+    }
+
+    out << size << "\n";
+
+    for (std::uint32_t i = 0; i < size; i++) {
+        out << data[i].name << "\n";
+    }
+
+    out.close(); 
+    std::cout << "Records saved to file: " << p << "\n";
+}
