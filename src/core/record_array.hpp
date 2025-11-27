@@ -3,9 +3,9 @@
 #include <cstdint>
 
 struct RecordArray {
-  Record *data;
-  std::uint32_t size;
-  std::uint32_t capacity;
+  Record *data_;
+  std::uint32_t size_;
+  std::uint32_t capacity_;
 
   RecordArray();
   // RecordArray(std::uint32_t _capacity) {

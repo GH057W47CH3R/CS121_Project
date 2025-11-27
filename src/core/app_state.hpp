@@ -6,7 +6,7 @@ namespace fs = std::filesystem;
 
 struct AppState {
 private:
-  RecordArray records_state;
+  RecordArray records_state_;
 
 public:
   void load_from_file(const fs::path &);

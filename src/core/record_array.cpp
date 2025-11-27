@@ -1,41 +1,41 @@
 #include "record_array.hpp"
 #include <stdexcept>
 
-RecordArray::RecordArray() : data(nullptr), size(0), capacity(0) {}
+RecordArray::RecordArray() : data_(nullptr), size_(0), capacity_(0) {}
 
 RecordArray::~RecordArray() {
-  delete[] data;
-  data = nullptr;
-  size = 0;
-  capacity = 0;
+  delete[] data_;
+  data_ = nullptr;
+  size_ = 0;
+  capacity_ = 0;
 }
 
 void RecordArray::add_record(Record record) {
-  if (this->size == this->capacity) {
-    this->resize(this->capacity * 2);
+  if (size_ == capacity_) {
+    this->resize(capacity_ * 2);
   }
-  this->data[size] = record;
+  data_[size_] = record;
 }
 
 // For now only allow new_capacity to be bigger than the current capaxity
 void RecordArray::resize(std::uint32_t new_capacity) {
-  if (new_capacity < this->capacity) {
+  if (new_capacity < capacity_) {
     throw std::runtime_error("attempt to resize record array to be smaller");
   }
   Record *new_data = new Record[new_capacity];
-  for (std::size_t i = 0; i < this->size; ++i) {
-    new_data[i] = this->data[i];
+  for (std::size_t i = 0; i < size_; ++i) {
+    new_data[i] = data_[i];
   }
-  this->capacity = new_capacity;
-  delete[] this->data;
-  this->data = new_data;
+  capacity_ = new_capacity;
+  delete[] data_;
+  data_ = new_data;
 }
 
 void RecordArray::delete_record(std::uint32_t index) {
-  if (index >= size) {
+  if (index >= size_) {
     throw std::invalid_argument("Invalid index");
   }
 
-  data[index] = data[size - 1];
-  size--;
+  data_[index] = data_[size_ - 1];
+  size_--;
 }

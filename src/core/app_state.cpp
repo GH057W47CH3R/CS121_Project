@@ -33,9 +33,9 @@ void AppState::load_from_file(const fs::path &p) {
       i++;
     }
     // TODO: use a non-default constructor instead of this.
-    this->records_state.data = loaded_records;
-    this->records_state.size = count;
-    this->records_state.capacity = count;
+    records_state_.data_ = loaded_records;
+    records_state_.size_ = count;
+    records_state_.capacity_ = count;
   } else if (ec) {
     throw std::runtime_error("Error checking path: " + ec.message());
   } else {
@@ -53,10 +53,10 @@ void AppState::save_to_file(const fs::path &p) {
     throw std::runtime_error("Failed to open file for writing");
   }
 
-  out << this->records_state.size << "\n";
+  out << records_state_.size_ << "\n";
 
-  for (std::uint32_t i = 0; i < this->records_state.size; i++) {
-    out << this->records_state.data[i].name << "\n";
+  for (std::uint32_t i = 0; i < records_state_.size_; i++) {
+    out << records_state_.data_[i].name << "\n";
   }
 
   out.close();
