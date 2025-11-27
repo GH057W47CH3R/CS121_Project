@@ -7,3 +7,6 @@ struct Record {
 
   char name[max_name_bytes];
 };
+
+// # TODO add serialize deserialize functions. serialize could be a constructor
+// deserialize should be a member function that outputs the record as cstring.

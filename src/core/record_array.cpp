@@ -3,12 +3,11 @@
 
 RecordArray::RecordArray() : data_(nullptr), size_(0), capacity_(0) {}
 
-RecordArray::~RecordArray() {
-  delete[] data_;
-  data_ = nullptr;
-  size_ = 0;
-  capacity_ = 0;
-}
+RecordArray::RecordArray(std::uint32_t size, std::uint32_t capacity)
+    : data_(capacity ? new Record[capacity] : nullptr), size_(size),
+      capacity_(capacity) {}
+
+RecordArray::~RecordArray() { delete[] data_; }
 
 void RecordArray::add_record(Record record) {
   if (size_ == capacity_) {

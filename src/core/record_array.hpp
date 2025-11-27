@@ -8,14 +8,9 @@ struct RecordArray {
   std::uint32_t capacity_;
 
   RecordArray();
-  // RecordArray(std::uint32_t _capacity) {
-  //   data = new Record[capacity];
-  //   size = 0;
-  //   capacity = _capacity;
-  // }
-  ~RecordArray();
+  explicit RecordArray(std::uint32_t size, std::uint32_t capacity);
 
-  void push(Record);
+  ~RecordArray();
 
   void resize(std::uint32_t);
 

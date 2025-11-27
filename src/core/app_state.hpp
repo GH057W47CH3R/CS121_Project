@@ -13,5 +13,10 @@ public:
   void save_to_file(const fs::path &);
   void add_record_to_state(Record);
   void delete_record_from_state(std::uint32_t);
-  void search_state(char[64]);
+  template <typename Pred> RecordArray select(Pred pred) const;
 };
+
+template <typename Pred> RecordArray AppState::select(Pred pred) const {
+  RecordArray out;
+  return out;
+}

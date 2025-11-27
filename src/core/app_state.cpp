@@ -21,21 +21,17 @@ void AppState::load_from_file(const fs::path &p) {
     if (!in.getline(line, 64))
       throw std::runtime_error("Failed to read record count line.");
     std::uint32_t count = static_cast<std::uint32_t>(std::stoul(line));
-    Record *loaded_records = new Record[count];
+    RecordArray loaded_array(count, count);
     // max bytes in line is 64
     unsigned int i = 0;
     while (in.getline(line, 64) && i < count) {
-      int matched = std::sscanf(line, "%63[^\n]", loaded_records[i].name);
+      int matched = std::sscanf(line, "%63[^\n]", loaded_array.data_[i].name);
       if (matched != 1) {
-        delete[] loaded_records;
+        delete[] loaded_array.data_;
         throw std::runtime_error("Failed to parse record line.");
       }
       i++;
     }
-    // TODO: use a non-default constructor instead of this.
-    records_state_.data_ = loaded_records;
-    records_state_.size_ = count;
-    records_state_.capacity_ = count;
   } else if (ec) {
     throw std::runtime_error("Error checking path: " + ec.message());
   } else {
