@@ -35,7 +35,6 @@ void AppState::load_from_file(const fs::path &p) {
   } else if (ec) {
     throw std::runtime_error("Error checking path: " + ec.message());
   } else {
-
     std::ofstream out(p);
     if (!out) {
       throw std::runtime_error("Failed to create file: " + p.string());

@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(core
     src/core/record_array.cpp
     src/core/app_state.cpp
+    src/core/predicate.cpp
 )
 
 target_include_directories(core PUBLIC

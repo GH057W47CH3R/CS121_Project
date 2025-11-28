@@ -14,12 +14,13 @@ int main(int argc, char *argv[]) {
   AppState app_state;
   try {
     app_state.load_from_file(p);
-    // do stuff
     // TODO: Integrate UI Loop
 
+    // we should be able to remove this once we are writing to disk
+    // on update.
     app_state.save_to_file(p);
   } catch (const std::exception &e) {
-    // #TODO fail gracefully
+    // #TODO fail gracefully when possible
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   }
