@@ -14,6 +14,7 @@ void RecordArray::add_record(Record record) {
     this->resize(capacity_ * 2);
   }
   data_[size_] = record;
+    size_++;
 }
 
 // For now only allow new_capacity to be bigger than the current capaxity
