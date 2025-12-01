@@ -9,6 +9,9 @@ private:
     std::string address;
 
 public:
+    // Default constructor
+    Contact() = default;
+
     Contact(const std::string& name,
         const std::string& phoneNumber,
         const std::string& email,
