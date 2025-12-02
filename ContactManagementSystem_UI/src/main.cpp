@@ -128,33 +128,44 @@ int main() {
                 int i = 4; // skip "ADD "
                 string name, address, phone;
 
-                // ---- READ NAME ----
-                while (i < (int)command.size() && command[i] != ' ') {
-                    name += command[i++];
-                }
+                // helper: read quoted string
+                auto readQuoted = [&](string& out) {
+                    // skip spaces
+                    while (i < command.size() && command[i] == ' ')
+                        i++;
 
-                if (i >= (int)command.size()) {
-                    cout << "Missing fields. Use: ADD <name> <address> <phone>\n";
+                    if (i >= command.size() || command[i] != '"')
+                        return false;
+
+                    i++; // skip opening quote
+
+                    while (i < command.size() && command[i] != '"') {
+                        out += command[i++];
+                    }
+
+                    if (i >= command.size() || command[i] != '"')
+                        return false;
+
+                    i++; // skip closing quote
+                    return true;
+                    };
+
+                // READ NAME
+                if (!readQuoted(name)) {
+                    cout << "Invalid format. Use: ADD \"name\" \"address\" \"phone\"\n";
                     continue;
                 }
 
-                while (i < (int)command.size() && command[i] == ' ') i++;
-
-                // ---- READ ADDRESS ----
-                while (i < (int)command.size() && command[i] != ' ') {
-                    address += command[i++];
-                }
-
-                if (i >= (int)command.size()) {
-                    cout << "Missing phone.\n";
+                // READ ADDRESS
+                if (!readQuoted(address)) {
+                    cout << "Invalid format. Use: ADD \"name\" \"address\" \"phone\"\n";
                     continue;
                 }
 
-                while (i < (int)command.size() && command[i] == ' ') i++;
-
-                // ---- READ PHONE ----
-                while (i < (int)command.size() && command[i] != ' ') {
-                    phone += command[i++];
+                // READ PHONE
+                if (!readQuoted(phone)) {
+                    cout << "Invalid format. Use: ADD \"name\" \"address\" \"phone\"\n";
+                    continue;
                 }
 
                 // STORE CONTACT
