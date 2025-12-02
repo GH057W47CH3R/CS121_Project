@@ -30,4 +30,5 @@ private:
 public:
   UIManager(Role, AppState *, std::ostream &, std::istream &);
   void ui_loop();
+  void setApp(AppState *);
 };
