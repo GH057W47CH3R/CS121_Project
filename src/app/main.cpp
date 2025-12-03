@@ -17,10 +17,7 @@ int main(int argc, char *argv[]) {
   UIManager ui_manager(Role::ReadOnly, &app_state, std::cout, std::cin);
   try {
     app_state.load_from_file(p);
-    // TODO: Integrate UI Loop
     ui_manager.ui_loop();
-    // we should be able to remove this once we are writing to disk
-    // on update.
     app_state.save_to_file(p);
   } catch (const std::exception &e) {
     // #TODO fail gracefully when possible

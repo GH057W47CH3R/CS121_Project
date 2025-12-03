@@ -5,9 +5,12 @@
 
 // helper function to go from string to record
 // all we have for now is name
-Record from_string(std::string &s) {
+Record from_string(std::uint32_t id, std::string &n, std::string &a,
+                   std::string &p) {
   Record r;
-  std::strncpy(r.name, s.c_str(), sizeof(r.name) - 1);
+  std::strncpy(r.name, n.c_str(), sizeof(r.name) - 1);
+  std::strncpy(r.address, a.c_str(), sizeof(r.address) - 1);
+  std::strncpy(r.phone, p.c_str(), sizeof(r.phone) - 1);
   return r;
 }
 
@@ -56,7 +59,8 @@ void UIManager::ui_loop() {
         continue;
       }
 
-      app_->add_record_to_state(from_string(name));
+      app_->add_record_to_state(
+          from_string(app_->get_next_id(), name, address, phone));
 
       out_ << "Contact added successfully.\n";
     }
@@ -171,9 +175,11 @@ void UIManager::ui_loop() {
     // -------- LIST function ---------------
     else if (command == "LIST") {
       for (std::uint32_t i = 0; i < app_->num_records(); i++) {
-        out_ << "Name: " << app_->record_at(i).get_name() << "\n";
-        // out_ << "Address: " << contacts[i].getAddress() << "\n";
-        // out_ << "Phone: " << contacts[i].getPhone() << "\n\n";
+        const Record &cur_rec = app_->record_at(i);
+        out_ << "Id: " << cur_rec.id << "\n";
+        out_ << "Name: " << cur_rec.name << "\n";
+        out_ << "Address: " << cur_rec.address << "\n";
+        out_ << "Phone: " << cur_rec.phone << "\n\n";
       }
     }
 

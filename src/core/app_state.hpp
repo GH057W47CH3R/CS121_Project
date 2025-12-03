@@ -3,7 +3,6 @@
 #include "ptr_array.hpp"
 #include "record_array.hpp"
 #include <filesystem>
-#include <fstream>
 
 namespace fs = std::filesystem;
 
@@ -26,14 +25,20 @@ using MutableRecordView = PtrArray<Record>;
 struct AppState {
 private:
   RecordArray records_state_;
+  std::uint32_t next_id_;
 
 public:
+  AppState() : records_state_(RecordArray()), next_id_(0) {}
   void load_from_file(const fs::path &p);
   void save_to_file(const fs::path &p);
   void add_record_to_state(Record);
   void delete_record_from_state(std::uint32_t);
+  std::uint32_t get_next_id() { return next_id_; }
+  std::uint32_t num_records();
+  const Record &record_at(std::uint32_t) const;
   RecordView select(const Predicate &pred) {
-    return view_match<const Record>(records_state_.data_, records_state_.size_, pred);
+    return view_match<const Record>(records_state_.data_, records_state_.size_,
+                                    pred);
   }
   MutableRecordView select_mut(const Predicate &pred) {
     return view_match<Record>(records_state_.data_, records_state_.size_, pred);
