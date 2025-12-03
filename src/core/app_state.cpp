@@ -75,6 +75,7 @@ std::uint32_t AppState::delete_by_pred(const Predicate &pred) {
   while (i < records_state_.size_) {
     if (pred.eval(records_state_[i])) {
       this->delete_record_from_state(i);
+      delete_count++;
     } else {
       ++i;
     }
