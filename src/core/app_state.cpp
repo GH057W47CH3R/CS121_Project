@@ -16,8 +16,13 @@ void AppState::load_from_file(const fs::path &p) {
         records_state_ = RecordArray();
         return;
     }
+
+    uint32_t count = 0;
+    in.read(reinterpret_cast<char*>(&count), sizeof(count));
+    in.read(reinterpret_cast<char*>(&next_id_), sizeof(next_id_));
+
     //RecordArray function will deserialize data if it exists
-    records_state_.deserialize(in);
+    records_state_.deserialize(in, count);
 }
 
 //Save all records to a binary (.bin) file
@@ -28,6 +33,11 @@ void AppState::save_to_file(const fs::path &p) {
     if (!out) {
         throw std::runtime_error("Failed to open file for writing: " + p.string());
     }
+
+    uint32_t count = records_state_.size_;
+    out.write(reinterpret_cast<char*>(&count), sizeof(count));
+    out.write(reinterpret_cast<char*>(&next_id_), sizeof(next_id_));
+
     //Serialize the RecordArray to file
     records_state_.serialize(out);
     std::cout << "Records saved to file: " << p << "\n";
