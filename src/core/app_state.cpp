@@ -18,7 +18,9 @@ void AppState::load_from_file(const fs::path &p) {
     }
 
     uint32_t count = 0;
+    //This reads the first 4 bytes for the number of objects for the count
     in.read(reinterpret_cast<char*>(&count), sizeof(count));
+    //This reads the next 4 bytes from the file for the next ID
     in.read(reinterpret_cast<char*>(&next_id_), sizeof(next_id_));
 
     //RecordArray function will deserialize data if it exists
@@ -34,8 +36,11 @@ void AppState::save_to_file(const fs::path &p) {
         throw std::runtime_error("Failed to open file for writing: " + p.string());
     }
 
+    //The number of records is copied to count
     uint32_t count = records_state_.size_;
+    //This writes the number of records into the file
     out.write(reinterpret_cast<char*>(&count), sizeof(count));
+    //This writes the next ID into the file
     out.write(reinterpret_cast<char*>(&next_id_), sizeof(next_id_));
 
     //Serialize the RecordArray to file
