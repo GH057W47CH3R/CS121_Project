@@ -2,64 +2,42 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
+
+//Loads all records from a binary (.bin) file
 void AppState::load_from_file(const fs::path &p) {
-  std::error_code ec;
-
-  fs::path ext = p.extension();
-
-  if (ext != ".txt") {
-    throw std::invalid_argument("the file must be a txt file.");
-  }
-
-  if (fs::exists(p, ec)) {
-    std::ifstream in(p);
-    if (!in) {
-      throw std::runtime_error("Error loading input stream.");
+  //Opens the file for reading in binary
+  std::ifstream in(p, std::ios::binary);
+  //If the file doesn't exist, this creates an empty file  
+  if (!in) {
+        std::ofstream out(p, std::ios::binary);
+        //Reset internal state to empty
+        records_state_ = RecordArray();
+        return;
     }
-    char line[64];
-    if (!in.getline(line, 64))
-      throw std::runtime_error("Failed to read record count line.");
-    std::uint32_t count = static_cast<std::uint32_t>(std::stoul(line));
-    RecordArray loaded_array(count, count);
-    // max bytes in line is 64
-    unsigned int i = 0;
-    while (in.getline(line, 64) && i < count) {
-      int matched = std::sscanf(line, "%63[^\n]", loaded_array.data_[i].name);
-      if (matched != 1) {
-        delete[] loaded_array.data_;
-        throw std::runtime_error("Failed to parse record line.");
-      }
-      i++;
-    }
-  } else if (ec) {
-    throw std::runtime_error("Error checking path: " + ec.message());
-  } else {
-    std::ofstream out(p);
-    if (!out) {
-      throw std::runtime_error("Failed to create file: " + p.string());
-    }
-  }
+    //RecordArray function will deserialize data if it exists
+    records_state_.deserialize(in);
 }
 
+//Save all records to a binary (.bin) file
 void AppState::save_to_file(const fs::path &p) {
-  std::ofstream out(p);
-  if (!out) {
-    throw std::runtime_error("Failed to open file for writing");
-  }
-
-  out << records_state_.size_ << "\n";
-
-  for (std::uint32_t i = 0; i < records_state_.size_; i++) {
-    out << records_state_.data_[i].name << "\n";
-  }
-
-  out.close();
-  std::cout << "Records saved to file: " << p << "\n";
+    //Open file for writing(this will overwrite existing file)
+    std::ofstream out(p, std::ios::binary);
+    //Excetion for if the file fails to open
+    if (!out) {
+        throw std::runtime_error("Failed to open file for writing: " + p.string());
+    }
+    //Serialize the RecordArray to file
+    records_state_.serialize(out);
+    std::cout << "Records saved to file: " << p << "\n";
 }
-
-std::uint32_t AppState::num_records() { return records_state_.size_; }
-
-void AppState::add_record_to_state(Record rec) {
+//Adds a new record to the RecordArray
+void AppState::add_record_to_state(Record rec){
   records_state_.add_record(rec);
 }
+//Deletes a record from the RecordArray
+void AppState::delete_record_from_state(std::uint32_t index){
+  records_state_.delete_record(index);
+}
+
