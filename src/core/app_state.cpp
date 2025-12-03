@@ -57,3 +57,7 @@ void AppState::save_to_file(const fs::path &p) {
   out.close();
   std::cout << "Records saved to file: " << p << "\n";
 }
+
+void AppState::add_record_to_state(Record rec) {
+  records_state_.add_record(rec);
+}

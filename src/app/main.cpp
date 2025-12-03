@@ -13,9 +13,8 @@ int main(int argc, char *argv[]) {
   }
   fs::path p = argv[1];
 
-  UIManager ui_manager(Role::ReadOnly, nullptr, std::cout, std::cin);
   AppState app_state;
-  ui_manager.setApp(&app_state);
+  UIManager ui_manager(Role::ReadOnly, &app_state, std::cout, std::cin);
   try {
     app_state.load_from_file(p);
     // TODO: Integrate UI Loop
