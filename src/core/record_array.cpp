@@ -70,14 +70,7 @@ void RecordArray::serialize(std::ostream& out) const{
   }
 }
 
-void RecordArray::deserialize(std::istream& in) {
-    std::uint32_t count = 0;
-    //Read how many records should be loaded
-    in.read(reinterpret_cast<char*>(&count), sizeof(count));
-    if (!in) {
-        throw std::runtime_error("Failed to read record count");
-    }
-
+void RecordArray::deserialize(std::istream& in, uint32_t count) {
     //Makes sure internal has exactly "count" capacity.
     resize(count);
     size_ = count;
