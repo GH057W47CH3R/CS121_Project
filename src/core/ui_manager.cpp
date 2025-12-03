@@ -105,9 +105,11 @@ void UIManager::ui_loop() {
       int i = 7; // skip "SELECT "
       std::string field, value;
       std::string pred_str = command.substr(7);
-      Predicate p;
+      Predicate p{};
       try {
-        Predicate p = parse_predicate(pred_str);
+        p = parse_predicate(pred_str);
+        std::cout << "LOG: parsed predicate" << p.string_val_ << " "
+                  << p.is_string_ << std::endl;
       } catch (const std::runtime_error &e) {
         out_ << "Parsing error: " << e.what() << "\n";
         continue;

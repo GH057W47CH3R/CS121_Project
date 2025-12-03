@@ -3,6 +3,8 @@
 #include <sstream>
 #include <stdexcept>
 
+#include <iostream>
+
 bool Predicate::eval(const Record &r) const {
   switch (col_) {
   case Col::Name:
@@ -25,6 +27,7 @@ bool Predicate::eval(const Record &r) const {
 
     switch (op_) {
     case Op::Eq:
+      std::cout << "LOG: " << field << " " << string_val_ << std::endl;
       return std::strcmp(field, string_val_.c_str()) == 0;
     case Op::SubStrEq:
       return std::strstr(field, string_val_.c_str()) != nullptr;
@@ -98,6 +101,7 @@ Predicate parse_predicate(const std::string &pred_str) {
   }
 
   if (pred.is_string_) {
+    std::cout << "LOG: storing this val as string val: " << val << std::endl;
     pred.string_val_ = val;
   } else {
     pred.int_val_ = static_cast<std::uint32_t>(std::stoul(val));
