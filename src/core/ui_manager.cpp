@@ -231,16 +231,24 @@ Predicate UIManager::parse_predicate(const std::string &pred_str) {
     throw std::runtime_error("The column does not exist");
   }
 
-  if (op == "=")
-    pred.op_ = Op::Eq;
-  else if (op == "<")
-    pred.op_ = Op::Lt;
-  else if (op == ">")
-    pred.op_ = Op::Gt;
-  else if (op == "*")
-    pred.op_ = Op::SubStrEq;
-  else {
-    throw std::runtime_error("Invalid operation");
+  if (pred.is_string_) {
+    if (op == "=") {
+      pred.op_ = Op::Eq;
+    } else if (op == "*") {
+      pred.op_ = Op::SubStrEq;
+    } else {
+      throw std::runtime_error("Invalid operation");
+    }
+  } else {
+    if (op == "=") {
+      pred.op_ = Op::Eq;
+    } else if (op == "<") {
+      pred.op_ = Op::Lt;
+    } else if (op == ">") {
+      pred.op_ = Op::Gt;
+    } else {
+      throw std::runtime_error("Invalid operation");
+    }
   }
 
   if (pred.is_string_) {
