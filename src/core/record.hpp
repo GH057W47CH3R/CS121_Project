@@ -8,7 +8,14 @@ struct Record {
   char name[max_name_bytes];
 
   const char *get_name() const { return name; }
-};
 
-// # TODO add serialize deserialize functions. serialize could be a constructor
-// deserialize should be a member function that outputs the record as cstring.
+  //Serialize the record by writing the raw bytes to an output stream
+  void serialize(std::ostream& out) const{
+    out.write(name, max_name_bytes);
+  }
+  //Deserialize the record by reading the raw bytes from an input stream
+  void deserialize(std::istream& in) {
+    in.read(name, max_name_bytes);
+}
+
+};
