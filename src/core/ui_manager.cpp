@@ -81,35 +81,27 @@ void UIManager::ui_loop() {
 
     // ---------- DELETE function -------------
     else if (command.rfind("DEL ", 0) == 0) {
+      std::string pred_str = command.substr(4);
+      Predicate p{};
+      // TODO seperate this out into its own function
+      try {
+        p = parse_predicate(pred_str);
+      } catch (const std::runtime_error &e) {
+        out_ << "Parsing error: " << e.what() << "\n";
+        continue;
+      }
+      std::uint32_t num_deleted = app_->delete_by_pred(p);
 
-      std::string target = command.substr(4);
-      bool deleted = false;
-      // #TODO DEL BY ID
-
-      // maybe we'll add this for now commenting out
-      // for (int i = 0; i < count; i++) {
-      //   if (contacts[i].getName() == target) {
-      //     for (int k = i; k < count - 1; k++)
-      //       contacts[k] = contacts[k + 1];
-      //     count--;
-      //     deleted = true;
-      //     break;
-      //   }
-      // }
-
-      out_ << (deleted ? "Contact deleted.\n" : "No contact found.\n");
+      out_ << "Deleted " << num_deleted << "contacts\n";
     }
 
     // ---------- SELECT function -------------
     else if (command.rfind("SELECT ", 0) == 0) {
       int i = 7; // skip "SELECT "
-      std::string field, value;
       std::string pred_str = command.substr(7);
       Predicate p{};
       try {
         p = parse_predicate(pred_str);
-        std::cout << "LOG: parsed predicate" << p.string_val_ << " "
-                  << p.is_string_ << std::endl;
       } catch (const std::runtime_error &e) {
         out_ << "Parsing error: " << e.what() << "\n";
         continue;

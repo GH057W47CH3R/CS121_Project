@@ -36,6 +36,8 @@ public:
   std::uint32_t get_next_id() { return next_id_; }
   std::uint32_t num_records();
   const Record &record_at(std::uint32_t) const;
+
+  std::uint32_t delete_by_pred(const Predicate &);
   RecordView select(const Predicate &pred) const {
     return view_match<const Record>(records_state_.data_, records_state_.size_,
                                     pred);

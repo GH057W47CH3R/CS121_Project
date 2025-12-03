@@ -67,3 +67,17 @@ std::uint32_t AppState::num_records() { return records_state_.size_; }
 const Record &AppState::record_at(std::uint32_t i) const {
   return records_state_[i];
 }
+
+std::uint32_t AppState::delete_by_pred(const Predicate &pred) {
+  std::uint32_t i = 0;
+  std::uint32_t delete_count = 0;
+
+  while (i < records_state_.size_) {
+    if (pred.eval(records_state_[i])) {
+      this->delete_record_from_state(i);
+    } else {
+      ++i;
+    }
+  }
+  return delete_count;
+}
