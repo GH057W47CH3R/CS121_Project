@@ -1,10 +1,14 @@
+#pragma once
+
 #include "app_state.hpp"
 #include <optional>
+#include <iostream>
 
 enum class Role { Admin, ReadOnly };
 enum class CommandType { Quit, Help, Insert, Edit, Select, Invalid, EditById };
 
 class Command {
+public:
   CommandType type;
   // for commands like Select
   std::optional<Predicate> pred;
@@ -29,6 +33,6 @@ private:
 
 public:
   UIManager(Role, AppState *, std::ostream &, std::istream &);
+  UIManager();
   void ui_loop();
-  void setApp(AppState *);
 };
