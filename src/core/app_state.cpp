@@ -44,6 +44,9 @@ void AppState::save_to_file(const fs::path &p) {
 }
 //Adds a new record to the RecordArray
 void AppState::add_record_to_state(Record rec){
+  //Assigns an ID and increments to next one
+  rec.id = next_id_;
+  next_id_++;
   records_state_.add_record(rec);
 }
 //Deletes a record from the RecordArray
