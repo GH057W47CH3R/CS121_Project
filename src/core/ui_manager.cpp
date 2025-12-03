@@ -123,8 +123,8 @@ void UIManager::ui_loop() {
     else if (command == "-h") {
       out_ << "\n-------- Help Menu -------\n";
       out_ << "ADD \"name\" \"address\" \"phone\"\n";
-      out_ << "DEL <name>\n";
-      out_ << "SELECT name=<value>\n";
+      out_ << "DEL <column> <match_op> <match_val>\n";
+      out_ << "SELECT <column> <match_op> <match_val>\n";
       out_ << "LIST\n";
       out_ << "QUIT\n";
       out_ << "-------------------------\n";
