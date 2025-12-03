@@ -1,20 +1,24 @@
 #pragma once
 #include "record.hpp"
 // boolean operations
-enum class Op { Eq, Ne };
-enum class Col { Name };
-struct Condition {
-  Col col_;
-  Op op_;
-  char val_[64];
+enum class Op { Eq, SubStrEq, Gt, Lt };
+enum class Col {
+  Name,
+  Id,
+  Address,
+  Phone,
 };
 
 // this is just one condition for now its separated to allow for multiple
 // conditions down the line
 struct Predicate {
-private:
-  Condition cond_;
-
 public:
+  Col col_;
+  Op op_;
+  bool is_string_;
+
+  std::uint32_t int_val_;
+  std::string string_val_;
+
   bool eval(const Record &) const;
 };

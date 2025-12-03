@@ -26,10 +26,7 @@ private:
   std::istream &in_;
 
   // internal functions
-  Predicate parse_predicate();
-  // this should take some buffer or (str) to parse from as argument.
-  Command parse_command();
-  void handle_command(Command &com);
+  Predicate parse_predicate(const std::string &);
 
 public:
   UIManager(Role, AppState *, std::ostream &, std::istream &);

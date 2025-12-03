@@ -5,8 +5,7 @@
 
 // helper function to go from string to record
 // all we have for now is name
-Record from_string(std::uint32_t id, std::string &n, std::string &a,
-                   std::string &p) {
+Record from_string(std::string &n, std::string &a, std::string &p) {
   Record r;
   std::strncpy(r.name, n.c_str(), sizeof(r.name) - 1);
   std::strncpy(r.address, a.c_str(), sizeof(r.address) - 1);
@@ -59,8 +58,7 @@ void UIManager::ui_loop() {
         continue;
       }
 
-      app_->add_record_to_state(
-          from_string(app_->get_next_id(), name, address, phone));
+      app_->add_record_to_state(from_string(name, address, phone));
 
       out_ << "Contact added successfully.\n";
     }
@@ -90,11 +88,13 @@ void UIManager::ui_loop() {
     else if (command.rfind("SELECT ", 0) == 0) {
       int i = 7; // skip "SELECT "
       std::string field, value;
+      std::string pred_str = command.substr(7);
+      this->parse_predicate(pred_str);
       // #TODO we'll talk about it
 
       // Read field (until '=')
-      // while (i < (int)command.size() && command[i] != '=')
-      //   field += command[i++];
+      while (i < (int)command.size() && command[i] != '=')
+        field += command[i++];
 
       // if (i >= (int)command.size() || command[i] != '=') {
       //   std::cout << "Invalid format. Use: SELECT field=value\n";
@@ -206,15 +206,48 @@ void UIManager::ui_loop() {
   }
 }
 
-// Putting these here to get rid of linker errors for now.
-Predicate UIManager::parse_predicate() { return Predicate{}; }
+// This isnt a defensive parsing just for simplicity we require
+// strict adherence to the format
+Predicate UIManager::parse_predicate(const std::string &pred_str) {
+  Predicate pred;
 
-Command UIManager::parse_command() {
-  Command cmd;
-  cmd.type = CommandType::Invalid;
-  return cmd;
-}
+  std::string col, op, val;
+  std::istringstream string_stream(pred_str);
+  string_stream >> col >> op >> val;
 
-void UIManager::handle_command(Command & /*com*/) {
-  // intentionally left blank for now.
+  if (col == "id") {
+    pred.col_ = Col::Id;
+    pred.is_string_ = false;
+  } else if (col == "name") {
+    pred.col_ = Col::Name;
+    pred.is_string_ = true;
+  } else if (col == "address") {
+    pred.col_ = Col::Address;
+    pred.is_string_ = true;
+  } else if (col == "phone") {
+    pred.col_ = Col::Phone;
+    pred.is_string_ = true;
+  } else {
+    throw std::runtime_error("The column does not exist");
+  }
+
+  if (op == "=")
+    pred.op_ = Op::Eq;
+  else if (op == "<")
+    pred.op_ = Op::Lt;
+  else if (op == ">")
+    pred.op_ = Op::Gt;
+  else if (op == "*")
+    pred.op_ = Op::SubStrEq;
+  else {
+    throw std::runtime_error("Invalid operation");
+  }
+
+  if (pred.is_string_) {
+    pred.string_val_ = val;
+  } else {
+    pred.int_val_ = static_cast<std::uint32_t>(std::stoul(val));
+  }
+
+  return pred;
 }

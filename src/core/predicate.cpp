@@ -2,10 +2,10 @@
 #include <cstring>
 #include <stdexcept>
 
-bool eval_cond(const Condition &c, const Record &r) {
-  switch (c.col_) {
+bool Predicate::eval(const Record &r) {
+  switch (col_) {
   case Col::Name:
-    switch (c.op_) {
+    switch (op_) {
     case Op::Eq:
       // strcmp
       return strcmp(r.name, c.val_);
