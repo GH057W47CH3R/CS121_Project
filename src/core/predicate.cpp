@@ -1,6 +1,8 @@
 #include "predicate.hpp"
 #include <cstring>
+#include <sstream>
 #include <stdexcept>
+
 bool Predicate::eval(const Record &r) const {
   switch (col_) {
   case Col::Name:
@@ -48,4 +50,58 @@ bool Predicate::eval(const Record &r) const {
   }
 
   return true;
+}
+
+// This isnt a defensive parsing just for simplicity we require
+// strict adherence to the format
+Predicate parse_predicate(const std::string &pred_str) {
+  Predicate pred;
+
+  std::string col, op, val;
+  std::istringstream string_stream(pred_str);
+  string_stream >> col >> op >> val;
+
+  if (col == "id") {
+    pred.col_ = Col::Id;
+    pred.is_string_ = false;
+  } else if (col == "name") {
+    pred.col_ = Col::Name;
+    pred.is_string_ = true;
+  } else if (col == "address") {
+    pred.col_ = Col::Address;
+    pred.is_string_ = true;
+  } else if (col == "phone") {
+    pred.col_ = Col::Phone;
+    pred.is_string_ = true;
+  } else {
+    throw std::runtime_error("The column does not exist");
+  }
+
+  if (pred.is_string_) {
+    if (op == "=") {
+      pred.op_ = Op::Eq;
+    } else if (op == "*") {
+      pred.op_ = Op::SubStrEq;
+    } else {
+      throw std::runtime_error("Invalid operation");
+    }
+  } else {
+    if (op == "=") {
+      pred.op_ = Op::Eq;
+    } else if (op == "<") {
+      pred.op_ = Op::Lt;
+    } else if (op == ">") {
+      pred.op_ = Op::Gt;
+    } else {
+      throw std::runtime_error("Invalid operation");
+    }
+  }
+
+  if (pred.is_string_) {
+    pred.string_val_ = val;
+  } else {
+    pred.int_val_ = static_cast<std::uint32_t>(std::stoul(val));
+  }
+
+  return pred;
 }

@@ -22,3 +22,5 @@ public:
 
   bool eval(const Record &) const;
 };
+
+Predicate parse_predicate(const std::string &);

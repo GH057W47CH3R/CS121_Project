@@ -2,19 +2,21 @@
 
 #include "app_state.hpp"
 #include <iostream>
-#include <optional>
 
 enum class Role { Admin, ReadOnly };
-enum class CommandType { Quit, Help, Insert, Edit, Select, Invalid, EditById };
-
-class Command {
-public:
-  CommandType type;
-  // for commands like Select
-  std::optional<Predicate> pred;
-  // for commands like insert
-  std::optional<Record> record;
-};
+// Maybe go back to this. Katies choice. The benefit is mostly ergonomic and
+// richer types
+// enum class CommandType { Quit, Help, Insert, Edit, Select, Invalid, EditById
+// };
+//
+// class Command {
+// public:
+//   CommandType type;
+//   // for commands like Select
+//   std::optional<Predicate> pred;
+//   // for commands like insert
+//   std::optional<Record> record;
+// };
 
 class UIManager {
 private:
@@ -24,9 +26,8 @@ private:
   AppState *app_;
   std::ostream &out_;
   std::istream &in_;
-
-  // internal functions
-  Predicate parse_predicate(const std::string &);
+  void print_record(const Record *);
+  void print_record(const Record &);
 
 public:
   UIManager(Role, AppState *, std::ostream &, std::istream &);
