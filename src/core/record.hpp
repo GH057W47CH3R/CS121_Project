@@ -6,6 +6,8 @@ struct Record {
   inline static constexpr std::size_t max_name_bytes = 64;
 
   char name[max_name_bytes];
+
+  const char *get_name() const { return name; }
 };
 
 // # TODO add serialize deserialize functions. serialize could be a constructor

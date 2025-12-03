@@ -8,9 +8,13 @@ struct RecordArray {
   std::uint32_t capacity_;
 
   RecordArray();
-  explicit RecordArray(std::uint32_t size, std::uint32_t capacity);
+  RecordArray(std::uint32_t size, std::uint32_t capacity);
 
   ~RecordArray();
+
+  Record &operator[](std::uint32_t i) { return data_[i]; }
+
+  const Record &operator[](std::uint32_t i) const { return data_[i]; }
 
   void resize(std::uint32_t);
 

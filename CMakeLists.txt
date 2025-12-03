@@ -9,6 +9,7 @@ add_library(core
     src/core/record_array.cpp
     src/core/app_state.cpp
     src/core/predicate.cpp
+    src/core/ui_manager.cpp
 )
 
 target_include_directories(core PUBLIC

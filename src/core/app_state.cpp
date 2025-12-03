@@ -58,6 +58,8 @@ void AppState::save_to_file(const fs::path &p) {
   std::cout << "Records saved to file: " << p << "\n";
 }
 
+std::uint32_t AppState::num_records() { return records_state_.size_; }
+
 void AppState::add_record_to_state(Record rec) {
   records_state_.add_record(rec);
 }

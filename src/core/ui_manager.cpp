@@ -66,16 +66,18 @@ void UIManager::ui_loop() {
 
       std::string target = command.substr(4);
       bool deleted = false;
+      // #TODO DEL BY ID
 
-      for (int i = 0; i < count; i++) {
-        if (contacts[i].getName() == target) {
-          for (int k = i; k < count - 1; k++)
-            contacts[k] = contacts[k + 1];
-          count--;
-          deleted = true;
-          break;
-        }
-      }
+      // maybe we'll add this for now commenting out
+      // for (int i = 0; i < count; i++) {
+      //   if (contacts[i].getName() == target) {
+      //     for (int k = i; k < count - 1; k++)
+      //       contacts[k] = contacts[k + 1];
+      //     count--;
+      //     deleted = true;
+      //     break;
+      //   }
+      // }
 
       out_ << (deleted ? "Contact deleted.\n" : "No contact found.\n");
     }
@@ -84,93 +86,94 @@ void UIManager::ui_loop() {
     else if (command.rfind("SELECT ", 0) == 0) {
       int i = 7; // skip "SELECT "
       std::string field, value;
+      // #TODO we'll talk about it
 
       // Read field (until '=')
-      while (i < (int)command.size() && command[i] != '=')
-        field += command[i++];
+      // while (i < (int)command.size() && command[i] != '=')
+      //   field += command[i++];
 
-      if (i >= (int)command.size() || command[i] != '=') {
-        std::cout << "Invalid format. Use: SELECT field=value\n";
-        continue;
-      }
+      // if (i >= (int)command.size() || command[i] != '=') {
+      //   std::cout << "Invalid format. Use: SELECT field=value\n";
+      //   continue;
+      // }
 
-      i++; // skip '='
+      // i++; // skip '='
 
-      // Read value (until end of line)
-      while (i < (int)command.size())
-        value += command[i++];
+      // // Read value (until end of line)
+      // while (i < (int)command.size())
+      //   value += command[i++];
 
-      // Trim spaces (manual, no <algorithm>)
-      auto trim = [](std::string &s) {
-        // Trim leading spaces
-        size_t start = 0;
-        while (start < s.size() && isspace(s[start]))
-          start++;
-        s = s.substr(start);
+      // // Trim spaces (manual, no <algorithm>)
+      // auto trim = [](std::string &s) {
+      //   // Trim leading spaces
+      //   size_t start = 0;
+      //   while (start < s.size() && isspace(s[start]))
+      //     start++;
+      //   s = s.substr(start);
 
-        // Trim trailing spaces
-        int end = (int)s.size() - 1;
-        while (end >= 0 && isspace(s[end]))
-          end--;
-        s = s.substr(0, end + 1);
-      };
+      //   // Trim trailing spaces
+      //   int end = (int)s.size() - 1;
+      //   while (end >= 0 && isspace(s[end]))
+      //     end--;
+      //   s = s.substr(0, end + 1);
+      // };
 
-      trim(field);
-      trim(value);
+      // trim(field);
+      // trim(value);
 
-      bool found = false;
+      // bool found = false;
 
-      for (int j = 0; j < count; j++) {
-        std::string contactValue;
+      // for (int j = 0; j < count; j++) {
+      //   std::string contactValue;
 
-        if (field == "name")
-          contactValue = contacts[j].getName();
-        else if (field == "address")
-          contactValue = contacts[j].getAddress();
-        else if (field == "phone")
-          contactValue = contacts[j].getPhone();
-        else {
-          std::cout << "Invalid field. Use: name, address, or phone\n";
-          break;
-        }
+      //   if (field == "name")
+      //     contactValue = contacts[j].getName();
+      //   else if (field == "address")
+      //     contactValue = contacts[j].getAddress();
+      //   else if (field == "phone")
+      //     contactValue = contacts[j].getPhone();
+      //   else {
+      //     std::cout << "Invalid field. Use: name, address, or phone\n";
+      //     break;
+      //   }
 
-        // Manual case-insensitive search without <algorithm>
-        // Convert both strings to lowercase manually
-        std::string contactLower, valueLower;
-        for (char c : contactValue) {
-          if (c >= 'A' && c <= 'Z')
-            contactLower += c + ('a' - 'A');
-          else
-            contactLower += c;
-        }
-        for (char c : value) {
-          if (c >= 'A' && c <= 'Z')
-            valueLower += c + ('a' - 'A');
-          else
-            valueLower += c;
-        }
+      //   // Manual case-insensitive search without <algorithm>
+      //   // Convert both strings to lowercase manually
+      //   std::string contactLower, valueLower;
+      //   for (char c : contactValue) {
+      //     if (c >= 'A' && c <= 'Z')
+      //       contactLower += c + ('a' - 'A');
+      //     else
+      //       contactLower += c;
+      //   }
+      //   for (char c : value) {
+      //     if (c >= 'A' && c <= 'Z')
+      //       valueLower += c + ('a' - 'A');
+      //     else
+      //       valueLower += c;
+      //   }
 
-        // Check if value is a substring of contactValue
-        if (contactLower.find(valueLower) != std::string::npos) {
-          std::cout << "\n--- Match Found ---\n";
-          std::cout << "Name: " << contacts[j].getName() << std::endl;
-          std::cout << "Address: " << contacts[j].getAddress() << std::endl;
-          std::cout << "Phone: " << contacts[j].getPhone() << std::endl;
-          std::cout << "-------------------\n";
-          found = true;
-        }
-      }
+      //   // Check if value is a substring of contactValue
+      //   if (contactLower.find(valueLower) != std::string::npos) {
+      //     std::cout << "\n--- Match Found ---\n";
+      //     std::cout << "Name: " << contacts[j].getName() << std::endl;
+      //     std::cout << "Address: " << contacts[j].getAddress() << std::endl;
+      //     std::cout << "Phone: " << contacts[j].getPhone() << std::endl;
+      //     std::cout << "-------------------\n";
+      //     found = true;
+      //   }
+      // }
 
-      if (!found) {
-        std::cout << "No matching contacts.\n";
-      }
+      // if (!found) {
+      //   std::cout << "No matching contacts.\n";
+      // }
     }
     // -------- LIST function ---------------
     else if (command == "LIST") {
-      for (int i = 0; i < count; i++) {
-        out_ << "Name: " << contacts[i].getName() << "\n";
-        out_ << "Address: " << contacts[i].getAddress() << "\n";
-        out_ << "Phone: " << contacts[i].getPhone() << "\n\n";
+      for (std::uint32_t i = 0; i < app_->num_records(); i++) {
+        out_ << "Name: " << app_->record_at(i).get_name() << "\n";
+        // out_ << "Address: " << contacts[i].getAddress() << "\n";
+        // out_ << "Phone: " << contacts[i].getPhone() << "\n\n";
       }
     }
 
@@ -198,10 +201,6 @@ void UIManager::ui_loop() {
 }
 
 // Putting these here to get rid of linker errors for now.
-
-UIManager::UIManager()
-    : role_(Role::ReadOnly), app_(nullptr), out_(std::cout), in_(std::cin) {}
-
 Predicate UIManager::parse_predicate() { return Predicate{}; }
 
 Command UIManager::parse_command() {
