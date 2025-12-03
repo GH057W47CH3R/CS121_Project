@@ -97,7 +97,6 @@ void UIManager::ui_loop() {
 
     // ---------- SELECT function -------------
     else if (command.rfind("SELECT ", 0) == 0) {
-      int i = 7; // skip "SELECT "
       std::string pred_str = command.substr(7);
       Predicate p{};
       try {
@@ -118,13 +117,54 @@ void UIManager::ui_loop() {
         this->print_record(cur_rec);
       }
     }
+    // ---------- EDIT function -------------
+    else if (command.rfind("EDIT ", 0) == 0) {
+      std::string pred_and_new = command.substr(5);
+      std::size_t last_space = pred_and_new.find_last_of(' ');
+      if (last_space == std::string::npos) {
+        out_ << "Parsing error: EDIT requires: column match_op match_value "
+                "new_value\n";
+        continue;
+      }
 
+      std::string pred_str = pred_and_new.substr(0, last_space);
+      std::string new_val = pred_and_new.substr(last_space + 1);
+
+      Predicate p{};
+      try {
+        p = parse_predicate(pred_str);
+      } catch (const std::runtime_error &e) {
+        out_ << "Parsing error: " << e.what() << "\n";
+        continue;
+      }
+      if (p.col_ == Col::Id) {
+        out_ << "Cant edit ID\n";
+        continue;
+      }
+      MutableRecordView selected_records = app_->select_mut(p);
+      for (std::uint32_t i = 0; i < selected_records.size_; i++) {
+        switch (p.col_) {
+        case Col::Name:
+          std::strcpy(selected_records[i]->name, new_val.c_str());
+          break;
+        case Col::Address:
+          std::strcpy(selected_records[i]->address, new_val.c_str());
+          break;
+        case Col::Phone:
+          std::strcpy(selected_records[i]->phone, new_val.c_str());
+          break;
+        default:
+          throw std::runtime_error("This path cannnot be reached");
+        }
+      }
+    }
     // ---------- HELP function -------------
     else if (command == "-h") {
       out_ << "\n-------- Help Menu -------\n";
       out_ << "ADD \"name\" \"address\" \"phone\"\n";
       out_ << "DEL <column> <match_op> <match_val>\n";
       out_ << "SELECT <column> <match_op> <match_val>\n";
+      out_ << "EDIT <column> <match_op> <match_val> <new_val>\n";
       out_ << "LIST\n";
       out_ << "QUIT\n";
       out_ << "-------------------------\n";
