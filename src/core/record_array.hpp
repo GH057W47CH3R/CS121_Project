@@ -26,5 +26,5 @@ struct RecordArray {
   //Writes to a binary output stream
   void serialize(std::ostream& out) const;
   //Reads a record from a binary output stream
-  void deserialize(std::istream& in);
+  void deserialize(std::istream& in, uint32_t count);
 };
