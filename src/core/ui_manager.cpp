@@ -74,15 +74,13 @@ void UIManager::ui_loop() {
         continue;
       }
 
-<<<<<<< HEAD
-=======
       Record new_rec = from_string(name, address, phone);
       if (!app_->contains_exact_match(new_rec)) {
         app_->add_record_to_state(new_rec);
+        out_ << "Contact added successfully.\n";
+      } else {
+        out_ << "Failed to add because there is an identical contact record\n";
       }
->>>>>>> 8912aae (implemented check before entry into record_array)
-
-      out_ << "Contact added successfully.\n";
     }
 
     // ---------- DELETE function -------------
