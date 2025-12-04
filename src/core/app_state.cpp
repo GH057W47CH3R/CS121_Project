@@ -82,3 +82,16 @@ std::uint32_t AppState::delete_by_pred(const Predicate &pred) {
   }
   return delete_count;
 }
+
+bool AppState::contains_exact_match(const Record &r) const {
+  for (std::uint32_t i = 0; i < this->records_state_.size_; ++i) {
+    if (strcmp(records_state_[i].phone, r.phone)) {
+      if (strcmp(records_state_[i].address, r.address)) {
+        if (strcmp(records_state_[i].name, r.name)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}

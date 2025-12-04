@@ -35,6 +35,7 @@ public:
   void delete_record_from_state(std::uint32_t);
   std::uint32_t get_next_id() { return next_id_; }
   std::uint32_t num_records();
+  bool contains_exact_match(const Record &) const;
   const Record &record_at(std::uint32_t) const;
 
   std::uint32_t delete_by_pred(const Predicate &);
