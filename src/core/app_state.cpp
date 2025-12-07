@@ -3,6 +3,72 @@
 #include <iostream>
 #include <stdexcept>
 
+void AppState::getValidate(const std::string& name, const std::string& address, const std::string& phone)
+{
+    // Name cannot be empty
+    if (name.empty()) {
+        throw std::runtime_error("Name cannot be empty.");
+    }
+
+    // Phone must be (XXX) XXX-XXXX
+    if (phone.size() != 14 ||
+        phone[0] != '(' ||
+        phone[4] != ')' ||
+        phone[5] != ' ' ||
+        phone[9] != '-') {
+        throw std::runtime_error("Phone number must be in the format (XXX) XXX-XXXX.");
+    }
+
+    for (int i = 1; i < 4; ++i) {
+        if (!std::isdigit(phone[i])) {
+            throw std::runtime_error("Invalid phone digits.");
+
+        }
+
+        // Address "Street, City, State ZIP"
+        size_t comma1 = address.find(',');
+        size_t comma2 = address.find(',', comma1 + 1);
+        size_t space = address.find(' ', comma2 + 1);
+
+        if (comma1 == std::string::npos ||
+            comma2 == std::string::npos ||
+            space == std::string::npos) {
+            throw std::runtime_error("Address must be in the format 'Street, City, State ZIP'.");
+        }
+
+        std::string street = address.substr(0, comma1);
+        std::string city = address.substr(comma1 + 2, comma2 - comma1 - 2);
+        std::string state = address.substr(comma2 + 2, space - comma2 - 2);
+        std::string zip = address.substr(space + 1);
+
+        // Removing any leading/trailing spaces
+        auto trim = [&](std::string& s) {
+            while (!s.empty() && s[0] == ' ') s.erase(0, 1);
+            };
+        trim(city);
+        trim(state);
+        trim(zip);
+
+        // State must be 2 uppercase letters
+        if (state.size() != 2 ||
+            !std::isupper(state[0]) ||
+            !std::isupper(state[1])) {
+            throw std::runtime_error("State must be 2 uppercase letters. i.e CA, IL, GA...");
+
+            // Zip must be 5 digits
+            if (zip.size() != 5)
+                throw std::runtime_error("ZIP code must be 5 digits.");
+
+            for (char c : zip) {
+                if (!std::isdigit(c)) {
+                    throw std::runtime_error("ZIP code must be 5 digits.");
+                }
+            }
+        }
+    }
+}
+
+
 // Loads all records from a binary (.bin) file
 // ASSUMPTION: this is only ran at the start of the program
 void AppState::load_from_file(const fs::path &p) {
