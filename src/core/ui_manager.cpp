@@ -77,8 +77,12 @@ void UIManager::ui_loop() {
       try {
         app_->getValidate(name, address, phone);
         Record record = from_string(name, address, phone);
-        app_->add_record_to_state(record);
-        out_ << "Contact added succesfully.";
+        if (!app_->contains_exact_match(record)) {
+          app_->add_record_to_state(record);
+          out_ << "Contact added succesfully.\n";
+        } else {
+          out_ << "Invalid ADD: There is an exact match already stored. \n";
+        }
       } catch (const std::runtime_error &e) {
         out_ << "Invalid ADD: " << e.what() << "\n";
       }
