@@ -10,6 +10,16 @@ void AppState::getValidate(const std::string &name, const std::string &address,
     throw std::runtime_error("Name cannot be empty.");
   }
 
+  if (address.size() >= Record::max_address_bytes) {
+    throw std::runtime_error("Address must be less than " +
+                             std::to_string(Record::max_address_bytes) +
+                             " bytes");
+  }
+  if (name.size() >= Record::max_name_bytes) {
+    throw std::runtime_error("Name must be less than " +
+                             std::to_string(Record::max_name_bytes) + " bytes");
+  }
+
   // Phone must be (XXX) XXX-XXXX
   if (phone.size() != 14) {
     throw std::runtime_error(
