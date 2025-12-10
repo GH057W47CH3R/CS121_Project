@@ -136,7 +136,7 @@ void UIManager::ui_loop() {
     else if (command.rfind("EDIT ", 0) == 0) {
 
       std::string pred_and_new = command.substr(5);
-      std::size_t last_space = pred_and_new.find_last_of(' ');
+      std::size_t last_space = pred_and_new.rfind('|');
 
       if (last_space == std::string::npos) {
         out_ << "Parsing error: EDIT requires: column match_op match_value "
@@ -145,7 +145,24 @@ void UIManager::ui_loop() {
       }
 
       std::string pred_str = pred_and_new.substr(0, last_space);
-      std::string new_val = pred_and_new.substr(last_space + 1);
+      std::string col_and_val = pred_and_new.substr(last_space + 1);
+      Col to_edit;
+      size_t eq_ind = col_and_val.rfind('=');
+      std::string new_col_string = col_and_val.substr(0, eq_ind);
+      std::string new_val =
+          col_and_val.substr(eq_ind + 2, col_and_val.size() - (eq_ind + 2) - 1);
+      if (new_col_string == "id") {
+        to_edit = Col::Id;
+      } else if (new_col_string == "address") {
+        to_edit = Col::Address;
+      } else if (new_col_string == "phone") {
+        to_edit = Col::Phone;
+      } else if (new_col_string == "name") {
+        to_edit = Col::Name;
+      } else {
+        out_ << "Invalid EDIT: invalid column to edit";
+        continue;
+      }
 
       Predicate p{};
       try {
@@ -155,7 +172,7 @@ void UIManager::ui_loop() {
         continue;
       }
 
-      if (p.col_ == Col::Id) {
+      if (to_edit == Col::Id) {
         out_ << "Cant edit ID\n";
         continue;
       }
@@ -168,13 +185,13 @@ void UIManager::ui_loop() {
 
           Record *rec = selected_records[i];
 
-          if (p.col_ == Col::Name)
+          if (to_edit == Col::Name)
             app_->getValidate(new_val, rec->address, rec->phone);
 
-          else if (p.col_ == Col::Address)
+          else if (to_edit == Col::Address)
             app_->getValidate(rec->name, new_val, rec->phone);
 
-          else if (p.col_ == Col::Phone)
+          else if (to_edit == Col::Phone)
             app_->getValidate(rec->name, rec->address, new_val);
         }
       } catch (const std::runtime_error &e) {
@@ -186,7 +203,7 @@ void UIManager::ui_loop() {
       for (uint32_t i = 0; i < selected_records.size_; i++) {
         Record *rec = selected_records[i];
 
-        switch (p.col_) {
+        switch (to_edit) {
         case Col::Name:
           std::strcpy(rec->name, new_val.c_str());
           break;
@@ -265,9 +282,17 @@ void UIManager::ui_loop() {
     else if (command == "-h") {
       out_ << "\n-------- Help Menu -------\n";
       out_ << "ADD \"name\" \"address\" \"phone\"\n";
+      out_ << "Ex: ADD \"John\" \"123 Clarenc St, Atlanta, GA 12345\" \"(123) "
+              "456-7890\"\n";
       out_ << "DEL <column> <match_op> <match_val>\n";
+      out_ << "Ex: DEL id > 3\n";
+      out_ << "Ex: DEL name = John\n";
       out_ << "SELECT <column> <match_op> <match_val>\n";
-      out_ << "EDIT <column> <match_op> <match_val> <new_val>\n";
+      out_ << "Ex: SELECT id = 5\n";
+      out_ << "EDIT <column> <match_op> <match_val>|<new_col>=<new_val>\n";
+      out_ << "Ex: EDIT address = 123 Clarenc St, Atlanta, GA "
+              "12345|address=\"534 "
+              "Clark St, Chicago, IL 36566\"";
       out_ << "LIST\n";
       out_ << "QUIT\n";
       out_ << "-------------------------\n";
