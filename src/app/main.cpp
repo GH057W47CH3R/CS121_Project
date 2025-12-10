@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     ui_manager.ui_loop();
     app_state.save_to_file(p);
   } catch (const std::exception &e) {
-    // #TODO fail gracefully when possible
+    // # TODO fail gracefully when possible
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   }
