@@ -1,3 +1,5 @@
+// Defines the Predicate struct
+// uses Op and Col as opposed to numbered values for readability
 #pragma once
 #include "record.hpp"
 // boolean operations

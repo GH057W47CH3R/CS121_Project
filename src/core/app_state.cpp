@@ -1,10 +1,65 @@
+// This file implements the functions declared in app_state.hpp
+// as well as a helper function to turn string references to a record.
 #include "app_state.hpp"
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 
-void AppState::getValidate(const std::string &name, const std::string &address,
-                           const std::string &phone) {
+// helper function to go from string to record
+// all we have for now is name
+Record from_string(const std::string &n, const std::string &a,
+                   const std::string &p) {
+  Record r;
+  std::strncpy(r.name, n.c_str(), sizeof(r.name) - 1);
+  std::strncpy(r.address, a.c_str(), sizeof(r.address) - 1);
+  std::strncpy(r.phone, p.c_str(), sizeof(r.phone) - 1);
+  return r;
+}
+
+void AppState::edit_by_pred(Predicate &p, Col &to_edit, std::string &new_val) {
+  MutableRecordView selected_records = this->select_mut(p);
+  // ---- VALIDATE FIRST ----
+  try {
+    for (uint32_t i = 0; i < selected_records.size_; i++) {
+
+      Record *rec = selected_records[i];
+
+      if (to_edit == Col::Name)
+        this->validate_fields(new_val, rec->address, rec->phone);
+
+      else if (to_edit == Col::Address)
+        this->validate_fields(rec->name, new_val, rec->phone);
+
+      else if (to_edit == Col::Phone)
+        this->validate_fields(rec->name, rec->address, new_val);
+    }
+  } catch (const std::runtime_error &e) {
+    throw std::runtime_error(std::string("EDIT failed: ") + e.what());
+  }
+
+  // ---- APPLY THE EDIT ----
+  for (uint32_t i = 0; i < selected_records.size_; i++) {
+    Record *rec = selected_records[i];
+
+    switch (to_edit) {
+    case Col::Name:
+      std::strcpy(rec->name, new_val.c_str());
+      break;
+    case Col::Address:
+      std::strcpy(rec->address, new_val.c_str());
+      break;
+    case Col::Phone:
+      std::strcpy(rec->phone, new_val.c_str());
+      break;
+    default:
+      throw std::runtime_error("This path cannot be reached");
+    }
+  }
+}
+
+void AppState::validate_fields(const std::string &name,
+                               const std::string &address,
+                               const std::string &phone) {
   // Name cannot be empty
   if (name.empty()) {
     throw std::runtime_error("Name cannot be empty.");
@@ -41,7 +96,6 @@ void AppState::getValidate(const std::string &name, const std::string &address,
   size_t comma1 = address.find(',');
   size_t comma2 = address.find(',', comma1 + 1);
   size_t space = address.find(' ', comma2 + 2);
-  std::cout << comma1 << " " << comma2 << " " << space << "\n";
 
   if (comma1 == std::string::npos || comma2 == std::string::npos ||
       space == std::string::npos) {
@@ -53,11 +107,6 @@ void AppState::getValidate(const std::string &name, const std::string &address,
   std::string city = address.substr(comma1 + 2, comma2 - comma1 - 2);
   std::string state = address.substr(comma2 + 2, space - comma2 - 2);
   std::string zip = address.substr(space + 1);
-
-  std::cout << "Street: " << street << "\n"
-            << "City: " << city << "\n"
-            << "State: " << state << "\n"
-            << "Zip: " << zip << "\n";
 
   // Removing any leading/trailing spaces
   auto trim = [&](std::string &s) {
@@ -82,6 +131,19 @@ void AppState::getValidate(const std::string &name, const std::string &address,
         throw std::runtime_error("ZIP code must be 5 digits.");
       }
     }
+  }
+}
+
+bool AppState::add_record_from_strings(const std::string &name,
+                                       const std::string &address,
+                                       const std::string &phone) {
+  this->validate_fields(name, address, phone);
+  Record record = from_string(name, address, phone);
+  if (!this->contains_exact_match(record)) {
+    this->add_record_to_state(record);
+    return true;
+  } else {
+    return false;
   }
 }
 

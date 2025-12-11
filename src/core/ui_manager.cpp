@@ -5,16 +5,6 @@
 #include <iostream>
 #include <stdexcept>
 
-// helper function to go from string to record
-// all we have for now is name
-Record from_string(std::string &n, std::string &a, std::string &p) {
-  Record r;
-  std::strncpy(r.name, n.c_str(), sizeof(r.name) - 1);
-  std::strncpy(r.address, a.c_str(), sizeof(r.address) - 1);
-  std::strncpy(r.phone, p.c_str(), sizeof(r.phone) - 1);
-  return r;
-}
-
 void UIManager::print_record(const Record *r) {
   out_ << "Id: " << r->id << "\n";
   out_ << "Name: " << r->name << "\n";
@@ -29,9 +19,8 @@ void UIManager::print_record(const Record &r) {
   out_ << "Phone: " << r.phone << "\n\n";
 }
 
-UIManager::UIManager(Role role, AppState *app, std::ostream &out,
-                     std::istream &in)
-    : role_(role), app_(app), out_(out), in_(in) {}
+UIManager::UIManager(AppState *app, std::ostream &out, std::istream &in)
+    : app_(app), out_(out), in_(in) {}
 
 void UIManager::ui_loop() {
 
@@ -75,10 +64,8 @@ void UIManager::ui_loop() {
       }
 
       try {
-        app_->getValidate(name, address, phone);
-        Record record = from_string(name, address, phone);
-        if (!app_->contains_exact_match(record)) {
-          app_->add_record_to_state(record);
+        bool success = app_->add_record_from_strings(name, address, phone);
+        if (success) {
           out_ << "Contact added succesfully.\n";
         } else {
           out_ << "Invalid ADD: There is an exact match already stored. \n";
@@ -100,7 +87,7 @@ void UIManager::ui_loop() {
       }
       std::uint32_t num_deleted = app_->delete_by_pred(p);
 
-      out_ << "Deleted " << num_deleted << "contacts\n";
+      out_ << "Deleted " << num_deleted << " contacts\n";
     }
 
     // ---------- SELECT function -------------
@@ -177,45 +164,11 @@ void UIManager::ui_loop() {
         continue;
       }
 
-      MutableRecordView selected_records = app_->select_mut(p);
-
-      // ---- VALIDATE FIRST ----
       try {
-        for (uint32_t i = 0; i < selected_records.size_; i++) {
-
-          Record *rec = selected_records[i];
-
-          if (to_edit == Col::Name)
-            app_->getValidate(new_val, rec->address, rec->phone);
-
-          else if (to_edit == Col::Address)
-            app_->getValidate(rec->name, new_val, rec->phone);
-
-          else if (to_edit == Col::Phone)
-            app_->getValidate(rec->name, rec->address, new_val);
-        }
+        app_->edit_by_pred(p, to_edit, new_val);
       } catch (const std::runtime_error &e) {
         out_ << "EDIT failed: " << e.what() << "\n";
         continue;
-      }
-
-      // ---- APPLY THE EDIT ----
-      for (uint32_t i = 0; i < selected_records.size_; i++) {
-        Record *rec = selected_records[i];
-
-        switch (to_edit) {
-        case Col::Name:
-          std::strcpy(rec->name, new_val.c_str());
-          break;
-        case Col::Address:
-          std::strcpy(rec->address, new_val.c_str());
-          break;
-        case Col::Phone:
-          std::strcpy(rec->phone, new_val.c_str());
-          break;
-        default:
-          throw std::runtime_error("This path cannot be reached");
-        }
       }
 
       out_ << "EDIT successful.\n";

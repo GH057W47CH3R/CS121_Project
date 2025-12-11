@@ -1,3 +1,5 @@
+// This file implements the member functions of Predicate
+// see predicate.hpp
 #include "predicate.hpp"
 #include <cstring>
 #include <sstream>
@@ -5,6 +7,7 @@
 
 #include <iostream>
 
+// evaluate the predicate against the given record
 bool Predicate::eval(const Record &r) const {
   switch (col_) {
   case Col::Name:
@@ -27,7 +30,6 @@ bool Predicate::eval(const Record &r) const {
 
     switch (op_) {
     case Op::Eq:
-      std::cout << "LOG: " << field << " " << string_val_ << std::endl;
       return std::strcmp(field, string_val_.c_str()) == 0;
     case Op::SubStrEq:
       return std::strstr(field, string_val_.c_str()) != nullptr;
@@ -55,14 +57,16 @@ bool Predicate::eval(const Record &r) const {
   return true;
 }
 
-// This isnt a defensive parsing just for simplicity we require
+// attempts to parse the predicate struct from a string
+// note: This isnt a defensive parsing just for simplicity we require
 // strict adherence to the format
 Predicate parse_predicate(const std::string &pred_str) {
   Predicate pred;
 
   std::string col, op, val;
   std::istringstream string_stream(pred_str);
-  string_stream >> col >> op >> val;
+  string_stream >> col >> op;
+  std::getline(string_stream >> std::ws, val);
 
   if (col == "id") {
     pred.col_ = Col::Id;
@@ -101,7 +105,6 @@ Predicate parse_predicate(const std::string &pred_str) {
   }
 
   if (pred.is_string_) {
-    std::cout << "LOG: storing this val as string val: " << val << std::endl;
     pred.string_val_ = val;
   } else {
     pred.int_val_ = static_cast<std::uint32_t>(std::stoul(val));

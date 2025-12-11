@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
   fs::path p = argv[1];
 
   AppState app_state;
-  UIManager ui_manager(Role::ReadOnly, &app_state, std::cout, std::cin);
+  UIManager ui_manager(&app_state, std::cout, std::cin);
   try {
     app_state.load_from_file(p);
     ui_manager.ui_loop();
