@@ -1,3 +1,8 @@
+// contributors: Katie, Ethan
+//
+// This file implements the ui_manager interface.
+// Primarily ui_loop, which is the function used for taking input strings
+// and turning them into actions.
 #include "ui_manager.hpp"
 #include "predicate.hpp"
 #include "record.hpp"

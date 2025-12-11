@@ -1,3 +1,4 @@
+// contributors: Ethan, Kaleb, Katie
 #pragma once
 #include "predicate.hpp"
 #include "ptr_array.hpp"
@@ -6,6 +7,7 @@
 
 namespace fs = std::filesystem;
 
+// Ethan
 template <typename T>
 PtrArray<T> view_match(T *data, std::uint32_t size, const Predicate &pred) {
   PtrArray<T> view;

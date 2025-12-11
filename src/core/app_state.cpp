@@ -1,3 +1,5 @@
+// contributors marked per function
+//
 // This file implements the functions declared in app_state.hpp
 // as well as a helper function to turn string references to a record.
 #include "app_state.hpp"
@@ -16,9 +18,9 @@ Record from_string(const std::string &n, const std::string &a,
   return r;
 }
 
+// Ethan
 void AppState::edit_by_pred(Predicate &p, Col &to_edit, std::string &new_val) {
   MutableRecordView selected_records = this->select_mut(p);
-  // ---- VALIDATE FIRST ----
   try {
     for (uint32_t i = 0; i < selected_records.size_; i++) {
 
@@ -37,7 +39,6 @@ void AppState::edit_by_pred(Predicate &p, Col &to_edit, std::string &new_val) {
     throw std::runtime_error(std::string("EDIT failed: ") + e.what());
   }
 
-  // ---- APPLY THE EDIT ----
   for (uint32_t i = 0; i < selected_records.size_; i++) {
     Record *rec = selected_records[i];
 
@@ -57,6 +58,7 @@ void AppState::edit_by_pred(Predicate &p, Col &to_edit, std::string &new_val) {
   }
 }
 
+// Katie
 void AppState::validate_fields(const std::string &name,
                                const std::string &address,
                                const std::string &phone) {
@@ -134,6 +136,7 @@ void AppState::validate_fields(const std::string &name,
   }
 }
 
+// Ethan
 bool AppState::add_record_from_strings(const std::string &name,
                                        const std::string &address,
                                        const std::string &phone) {
@@ -147,8 +150,8 @@ bool AppState::add_record_from_strings(const std::string &name,
   }
 }
 
+// Kaleb
 // Loads all records from a binary (.bin) file
-// ASSUMPTION: this is only ran at the start of the program
 void AppState::load_from_file(const fs::path &p) {
   // Opens the file for reading in binary
   std::ifstream in(p, std::ios::binary);
@@ -174,6 +177,7 @@ void AppState::load_from_file(const fs::path &p) {
   records_state_.deserialize(in, count);
 }
 
+// Kaleb
 // Save all records to a binary (.bin) file
 void AppState::save_to_file(const fs::path &p) {
   // Open file for writing(this will overwrite existing file)
@@ -201,10 +205,12 @@ void AppState::add_record_to_state(Record rec) {
   next_id_++;
   records_state_.add_record(rec);
 }
+
 // Deletes a record from the RecordArray
 void AppState::delete_record_from_state(std::uint32_t index) {
   records_state_.delete_record(index);
 }
+
 // Provides public way to get size of records_state_
 std::uint32_t AppState::num_records() { return records_state_.size_; }
 // Provides public method to view a record
@@ -212,6 +218,7 @@ const Record &AppState::record_at(std::uint32_t i) const {
   return records_state_[i];
 }
 
+// Ethan
 std::uint32_t AppState::delete_by_pred(const Predicate &pred) {
   std::uint32_t i = 0;
   std::uint32_t delete_count = 0;
@@ -227,6 +234,7 @@ std::uint32_t AppState::delete_by_pred(const Predicate &pred) {
   return delete_count;
 }
 
+// Ethan
 bool AppState::contains_exact_match(const Record &r) const {
   for (std::uint32_t i = 0; i < this->records_state_.size_; ++i) {
     if (!strcmp(records_state_[i].phone, r.phone) &&

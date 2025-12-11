@@ -1,3 +1,4 @@
+// contributors: Ethan
 // This file implements the member functions of Predicate
 // see predicate.hpp
 #include "predicate.hpp"

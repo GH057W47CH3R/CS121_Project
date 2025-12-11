@@ -1,3 +1,5 @@
+// This is the entrypoint for the program.
+// contributors: Ethan
 #include "core/app_state.hpp"
 #include "core/ui_manager.hpp"
 #include <filesystem>

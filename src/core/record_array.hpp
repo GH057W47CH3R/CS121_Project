@@ -1,3 +1,4 @@
+// contbutors: Kaleb, Ethan
 #pragma once
 #include "record.hpp"
 #include <cstdint>

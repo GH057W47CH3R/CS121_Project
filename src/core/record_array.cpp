@@ -1,3 +1,4 @@
+// contributors: Kaleb, Ethan
 #include "record_array.hpp"
 #include <cstring>
 #include <stdexcept>

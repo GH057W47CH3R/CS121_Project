@@ -1,10 +1,11 @@
+// contributors: Kaleb
 #pragma once
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
 #include <fstream>
 
-// We will add to this
+// Record is a struct for the data for one contact
 struct Record {
   inline static constexpr std::size_t max_name_bytes = 64;
   inline static constexpr std::size_t max_address_bytes = 128;
