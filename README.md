@@ -82,5 +82,7 @@ We use cmake to build the project.
 - Record := The data type of the information stored per person.
 - RecordArray := is an array of records with an associated size and capacity.
 - AppState := The state of the app which includes RecordArray.
+- UIManager := Holds input/output stream references and provides a ui_loop function which
+the primary interaction loop.
 
 ![class diagram](assets/diagram.png)
